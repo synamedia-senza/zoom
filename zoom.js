@@ -3,9 +3,6 @@ import { videoManager } from "./videoManager.js";
 import shaka from "shaka-player";
 
 const TEST_VIDEO = "https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd";
-const ANIMATION_DELAY = 1000;
-
-const pixelStyles = ["top", "left", "width", "height"];
 
 class ZoomVideo {
   init(video, minFrame, maxFrame) {
@@ -35,7 +32,7 @@ class ZoomVideo {
     for (let key in rect) {
       let value = rect[key];
       if (key == "z-index") value = Math.floor(value);
-      if (pixelStyles.includes(key)) value += "px";
+      if (["top", "left", "width", "height"].includes(key)) value += "px";
       this.video.style[key] = value;
     }
   }
@@ -119,9 +116,6 @@ window.addEventListener("load", async () => {
     zoom2.player.getMediaElement().currentTime = 60;
     zoom2.setMin();
     zoom2.player.getMediaElement().play();
-
-    zoom1.video.removeAttribute("muted");
-    zoom2.video.removeAttribute("muted");
 
     uiReady();
   } catch (error) {
