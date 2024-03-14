@@ -29,12 +29,12 @@ class ZoomVideo {
   }
 
   setRect(rect) {
-    for (let key in rect) {
-      let value = rect[key];
-      if (key == "z-index") value = Math.floor(value);
-      if (["top", "left", "width", "height"].includes(key)) value += "px";
-      this.video.style[key] = value;
+    for (let key of ["top", "left", "width", "height"]) {
+      this.setStyle(key, rect[key] + "px");
     }
+    this.setStyle("opacity", rect.opacity);
+    this.setStyle("z-index", Math.floor(rect.zIndex));
+    this.setVolume(rect.volume);
   }
 
   animateRect(oldRect, newRect, ms, after) {
@@ -62,8 +62,12 @@ class ZoomVideo {
     }, ms / steps);
   }
   
+  setStyle(key, value) {
+    this.video.style[key] = value;
+  }
+
   setVolume(value) {
-    this.player.getMediaElement().volume = value;
+    this.video.volume = value;
   }
 }
 
@@ -79,7 +83,8 @@ let fullFrame = {
   width: fullWidth, 
   height: fullHeight, 
   opacity: 1.0,
-  "z-index": 100
+  zIndex: 100,
+  volume: 1.0
 };
 let topRight = { 
   top: margin, 
@@ -87,7 +92,8 @@ let topRight = {
   width: minimizedWidth, 
   height: minimizedHeight, 
   opacity: 0.75,
-  "z-index": 200
+  zIndex: 200,
+  volume: 0.0
 };
 let bottomLeft = { 
   top: fullHeight - minimizedHeight - margin, 
@@ -95,7 +101,8 @@ let bottomLeft = {
   width: minimizedWidth, 
   height: minimizedHeight, 
   opacity: 0.75,
-  "z-index": 200
+  zIndex: 200,
+  volume: 0.0
 };
 
 let zoom1 = new ZoomVideo();
@@ -109,6 +116,7 @@ window.addEventListener("load", async () => {
     videoManager.init(zoom1.player);
     await videoManager.load(TEST_VIDEO);
     zoom1.setMax();
+    zoom1.setVolume(0.0); // otherwise won't autoplay
     videoManager.play();
     
     zoom2.init(video2, topRight, fullFrame);
@@ -139,18 +147,10 @@ function select1() {
   zoom1.animateMax();
   setTimeout(() => zoom2.animateMin(), 200);
   videoManager.localPlayer = zoom1.player;
-  setTimeout(() => {
-    zoom2.setVolume(0.0);
-    zoom1.setVolume(1.0);
-  }, 500);
 }
 
 function select2() {
   zoom2.animateMax();
   setTimeout(() => zoom1.animateMin(), 200);
   videoManager.localPlayer = zoom2.player;
-  setTimeout(() => {
-    zoom1.setVolume(0.0);
-    zoom2.setVolume(1.0);
-  }, 500);
 }
