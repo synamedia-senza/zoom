@@ -91,7 +91,7 @@ let topRight = {
   left: fullWidth - minimizedWidth - margin, 
   width: minimizedWidth, 
   height: minimizedHeight, 
-  opacity: 0.75,
+  opacity: 0.8,
   zIndex: 200,
   volume: 0.0
 };
@@ -100,7 +100,7 @@ let bottomLeft = {
   left: margin, 
   width: minimizedWidth, 
   height: minimizedHeight, 
-  opacity: 0.75,
+  opacity: 0.8,
   zIndex: 200,
   volume: 0.0
 };
