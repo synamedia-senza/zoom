@@ -5,105 +5,53 @@ import shaka from "shaka-player";
 const TEST_VIDEO = "https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd";
 
 class ZoomVideo {
-  init(video, minFrame, maxFrame) {
+  init(name, video) {
+    this.name = name;
     this.video = video;
     this.player = new shaka.Player(video);
-    this.minFrame = minFrame;
-    this.maxFrame = maxFrame;
   }
   
-  setMin() {
-    this.setRect(this.minFrame);
-  }
-  
-  setMax() {
-    this.setRect(this.maxFrame);
+  fadeIn() {
+    this.video.style.animationDuration = "4.0s";
+    this.video.style.animationName = "intro-" + this.name;
   }
   
   animateMin() {
-    this.animateRect(this.maxFrame, this.minFrame, 800);
+    setTimeout(() => {
+      this.video.style.animationDuration = "0.8s";
+      this.video.style.animationName = "minimize-" + this.name;
+      this.adjustVolume(1.0, 0.0, 800);
+    }, 200);
   }
-  
+
   animateMax() {
-    this.animateRect(this.minFrame, this.maxFrame, 1000);
+    this.video.style.animationDuration = "1.0s";
+    this.video.style.animationName = "maximize-" + this.name;
+    this.adjustVolume(0.0, 1.0, 1000);
   }
 
-  setRect(rect) {
-    for (let key of ["top", "left", "width", "height"]) {
-      this.setStyle(key, rect[key] + "px");
-    }
-    this.setStyle("opacity", rect.opacity);
-    this.setStyle("z-index", Math.floor(rect.zIndex));
-    this.setVolume(rect.volume);
-  }
-
-  animateRect(oldRect, newRect, ms, after) {
+  adjustVolume(oldVolume, newVolume, ms) {
     const steps = 30;
-    let rect = structuredClone(oldRect);
     let count = 0;
+    let current = oldVolume;
+    let step = (newVolume - oldVolume) / steps;
   
-    let step = {};
-    for (let key in rect) {
-      step[key] = (newRect[key] - oldRect[key]) / steps;
-    }
-    
     let interval = setInterval(() => {
-      for (let key in rect) {
-        rect[key] += step[key];
-      }
-      this.setRect(rect);
-    
+      current += step;
+      this.setVolume(current);
+  
       count++;
       if (count == steps) {
         clearInterval(interval);
-        this.setRect(newRect);
-        if (after) after();
+        this.setVolume(newVolume);
       }
     }, ms / steps);
   }
   
-  setStyle(key, value) {
-    this.video.style[key] = value;
-  }
-
   setVolume(value) {
     this.video.volume = value;
   }
 }
-
-let margin = 50;
-let ratio = 0.25;
-let fullWidth = 1920;
-let fullHeight = 1080;
-let minimizedWidth = fullWidth * ratio;
-let minimizedHeight = fullHeight * ratio;
-let fullFrame = { 
-  top: 0, 
-  left: 0, 
-  width: fullWidth, 
-  height: fullHeight, 
-  opacity: 1.0,
-  zIndex: 100,
-  volume: 1.0
-};
-let topRight = { 
-  top: margin, 
-  left: fullWidth - minimizedWidth - margin, 
-  width: minimizedWidth, 
-  height: minimizedHeight, 
-  opacity: 0.8,
-  zIndex: 200,
-  volume: 0.0
-};
-let bottomLeft = { 
-  top: fullHeight - minimizedHeight - margin, 
-  left: margin, 
-  width: minimizedWidth, 
-  height: minimizedHeight, 
-  opacity: 0.8,
-  zIndex: 200,
-  volume: 0.0
-};
 
 let zoom1 = new ZoomVideo();
 let zoom2 = new ZoomVideo();
@@ -112,19 +60,20 @@ window.addEventListener("load", async () => {
   try {
     await init();
     
-    zoom1.init(video1, bottomLeft, fullFrame); 
+    zoom1.init("zoom1", video1); 
     videoManager.init(zoom1.player);
     await videoManager.load(TEST_VIDEO);
-    zoom1.setMax();
+    zoom1.player.getMediaElement().currentTime = 5;
     zoom1.setVolume(0.0); // otherwise won't autoplay
     videoManager.play();
     
-    zoom2.init(video2, topRight, fullFrame);
+    zoom2.init("zoom2", video2);
     await zoom2.player.load(TEST_VIDEO);
     zoom2.player.getMediaElement().currentTime = 60;
-    zoom2.setMin();
+    zoom2.setVolume(0.0);
     zoom2.player.getMediaElement().play();
-
+    zoom2.fadeIn();
+    
     uiReady();
   } catch (error) {
     console.error(error);
@@ -145,12 +94,12 @@ document.addEventListener("keydown", async function(event) {
 
 function select1() {
   zoom1.animateMax();
-  setTimeout(() => zoom2.animateMin(), 200);
+  zoom2.animateMin();
   videoManager.localPlayer = zoom1.player;
 }
 
 function select2() {
   zoom2.animateMax();
-  setTimeout(() => zoom1.animateMin(), 200);
+  zoom1.animateMin();
   videoManager.localPlayer = zoom2.player;
 }

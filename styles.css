@@ -15,4 +15,131 @@ body {
 
 .video {
   position: absolute;
+  
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
 }
+
+#video1 {
+  width: 1920px;
+  height: 1080px;
+  left: 0px;
+  top: 0px;
+  opacity: 1.0;
+  z-index: 100;
+}
+
+#video2 {
+  width: 480px;
+  height: 270px;
+  left: 1390px;
+  top: 50px;
+  opacity: 0.0;
+  z-index: 200;
+}
+
+@keyframes minimize-zoom1 {
+  0% {
+    width: 1920px;
+    height: 1080px;
+    left: 0px;
+    top: 0px;
+    opacity: 1.0;
+    z-index: 100;
+  }
+  100% {
+    width: 480px;
+    height: 270px;
+    left: 50px;
+    top: 760px;
+    opacity: 0.9;
+    z-index: 200;
+  }
+}
+
+@keyframes maximize-zoom1 {
+  0% {
+    width: 480px;
+    height: 270px;
+    left: 50px;
+    top: 760px;
+    opacity: 0.9;
+    z-index: 200;
+  }
+  100% {
+    width: 1920px;
+    height: 1080px;
+    left: 0px;
+    top: 0px;
+    opacity: 1.0;
+    z-index: 100;
+  }
+}
+
+@keyframes intro-zoom2 {
+  0% {
+    width: 480px;
+    height: 270px;
+    left: 1390px;
+    top: 50px;
+    opacity: 0.0;
+    z-index: 200;
+  }
+  50% {
+    width: 480px;
+    height: 270px;
+    left: 1390px;
+    top: 50px;
+    opacity: 0.0;
+    z-index: 200;
+  }
+  100% {
+    width: 480px;
+    height: 270px;
+    left: 1390px;
+    top: 50px;
+    opacity: 0.9;
+    z-index: 200;
+  }
+}
+
+
+@keyframes minimize-zoom2 {
+  0% {
+    width: 1920px;
+    height: 1080px;
+    left: 0px;
+    top: 0px;
+    opacity: 1.0;
+    z-index: 100;
+  }
+  100% {
+    width: 480px;
+    height: 270px;
+    left: 1390px;
+    top: 50px;
+    opacity: 0.9;
+    z-index: 200;
+  }
+}
+
+@keyframes maximize-zoom2 {
+  0% {
+    width: 480px;
+    height: 270px;
+    left: 1390px;
+    top: 50px;
+    opacity: 0.9;
+    z-index: 200;
+  }
+  100% {
+    width: 1920px;
+    height: 1080px;
+    left: 0px;
+    top: 0px;
+    opacity: 1.0;
+    z-index: 100;
+  }
+}
+
