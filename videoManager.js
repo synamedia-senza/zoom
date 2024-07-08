@@ -1,4 +1,4 @@
-import { remotePlayer, lifecycle } from "@Synamedia/hs-sdk";
+import { remotePlayer, lifecycle } from "senza-sdk";
 
 class VideoManager {
 

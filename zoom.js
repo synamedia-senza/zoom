@@ -1,8 +1,9 @@
-import { init, uiReady, lifecycle, alarmManager, messageManager } from "@Synamedia/hs-sdk";
+import { init, uiReady } from "senza-sdk";
 import { videoManager } from "./videoManager.js";
 import shaka from "shaka-player";
 
-const TEST_VIDEO = "https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd";
+const LOCAL_VIDEO = "./bbb_30fps.mpd";
+const REMOTE_VIDEO = "https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd";
 
 class ZoomVideo {
   init(name, video) {
@@ -17,11 +18,9 @@ class ZoomVideo {
   }
   
   animateMin() {
-    setTimeout(() => {
-      this.video.style.animationDuration = "0.8s";
-      this.video.style.animationName = "minimize-" + this.name;
-      this.adjustVolume(1.0, 0.0, 800);
-    }, 200);
+    this.video.style.animationDuration = "1.0s";
+    this.video.style.animationName = "minimize-" + this.name;
+    this.adjustVolume(1.0, 0.0, 1000);
   }
 
   animateMax() {
@@ -62,13 +61,18 @@ window.addEventListener("load", async () => {
     
     zoom1.init("zoom1", video1); 
     videoManager.init(zoom1.player);
-    await videoManager.load(TEST_VIDEO);
+    await zoom1.player.load(LOCAL_VIDEO);
+    try {
+      await videoManager.remotePlayer.load(REMOTE_VIDEO);
+    } catch (error) {
+      console.log("Couldn't load remote player: ", error);
+    }
     zoom1.player.getMediaElement().currentTime = 5;
     zoom1.setVolume(0.0); // otherwise won't autoplay
     videoManager.play();
     
     zoom2.init("zoom2", video2);
-    await zoom2.player.load(TEST_VIDEO);
+    await zoom2.player.load(LOCAL_VIDEO);
     zoom2.player.getMediaElement().currentTime = 60;
     zoom2.setVolume(0.0);
     zoom2.player.getMediaElement().play();

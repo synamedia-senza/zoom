@@ -13,7 +13,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@Synamedia/hs-sdk": "^3.15.13",
+    "senza-sdk": "^3.19.10",
     "shaka-player": "^3.2.9"
   }
 }
