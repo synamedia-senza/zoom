@@ -11,6 +11,6 @@ See the [Picture in Picture](https://developer.synamedia.com/senza/docs/picture-
 ```bash
 npm install
 npm ci
-npx webpack --config webpack.config.js
+npx webpack -w --config webpack.config.js
 open index.html
 ```
