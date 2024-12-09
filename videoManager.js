@@ -66,6 +66,7 @@ class VideoManager {
     let currentTime = this.media().currentTime;
     remotePlayer.currentTime = currentTime;
     remotePlayer.play();
+    lifecycle.moveToBackground();
   }
 
   async toggleBackground() {
